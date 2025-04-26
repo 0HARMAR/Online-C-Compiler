@@ -33,4 +33,20 @@ public class FileStorageConfig {
                 .resolve(basePath.getFileName())
                 .toString();
     }
+
+    public static String getUploadsPath(String userName) {
+        Path basePath = Paths.get(baseUploadPath.get());
+        return basePath.getParent()
+                .resolve(userName)
+                .resolve(basePath.getFileName())
+                .toString();
+    }
+
+    public static String getOutputsPath(String userName) {
+        Path basePath = Paths.get(baseOutputPath.get());
+        return basePath.getParent()
+                .resolve(userName)
+                .resolve(basePath.getFileName())
+                .toString();
+    }
 }
