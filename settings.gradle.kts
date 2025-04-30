@@ -1,1 +1,1 @@
-rootProject.name = "OnlineCCompiler"
+rootProject.name = "OnlineCCompiler "
