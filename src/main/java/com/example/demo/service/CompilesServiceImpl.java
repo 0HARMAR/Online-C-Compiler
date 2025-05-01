@@ -19,14 +19,20 @@ public class CompilesServiceImpl implements CompilesService {
 
     @Override
     public InputStreamResource handleCompiles(CompileConfig option, Claims claims) {
+        Map<String, List<String>> projectList;
         // 解压项目文件
         try {
-            Map<String, List<String>> ProjectList = uncompressProject(claims);
+            projectList = uncompressProject(claims);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-
+        //开始编译任务
+        try {
+            startCompilesProcess(option,projectList);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Map<String, List<String>> uncompressProject(Claims claims) throws IOException {
@@ -67,7 +73,8 @@ public class CompilesServiceImpl implements CompilesService {
         return directoryMap;
     }
 
-    private void startCompilesProcess(CompileConfig option) {
+    // gcc src/*.c -Iinclude -Llib -l你的库名 -Wall -o 可执行文件名
+    private void startCompilesProcess(CompileConfig option,Map<String,List<String>> projectList) throws IOException {
         Process process = new ProcessBuilder(
                 option.getCompilerType(),
                 option.getCompilerArgs(),
