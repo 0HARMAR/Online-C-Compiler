@@ -35,6 +35,8 @@ dependencies {
 	implementation ("io.jsonwebtoken:jjwt-api:0.11.5")   // 编译时API
 	runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.11.5")     // 运行时实现
 	runtimeOnly ("io.jsonwebtoken:jjwt-jackson:0.11.5")  // Jackson序列化
+
+	implementation ("com.aliyun.oss:aliyun-sdk-oss:3.17.0")
 }
 
 tasks.withType<Test> {

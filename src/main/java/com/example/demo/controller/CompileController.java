@@ -41,7 +41,7 @@ public class CompileController {
     public ResponseEntity<Result<String>> handleCompiles(
             @RequestBody CompileConfig option,
             @RequestAttribute("jwtClaims") Claims claims) {
-
+        return new ResponseEntity<>(Result.success("编译成功"),HttpStatus.OK);
     }
 
     @PostMapping("/download")
