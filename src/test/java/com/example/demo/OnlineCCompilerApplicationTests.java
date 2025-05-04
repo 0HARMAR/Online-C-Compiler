@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.aliyuncs.exceptions.ClientException;
+import com.example.demo.common.AliyunOSSOperator;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.Test;
@@ -36,4 +38,13 @@ class OnlineCCompilerApplicationTests {
 		String jwt = Jwts.builder().signWith(SignatureAlgorithm.HS256, "aGFybWFy").compact();
 		System.out.println(jwt);
 	}
+
+	@Test
+	public void testOSS(){
+        try {
+            AliyunOSSOperator.upload("hello".getBytes(),"hello.txt");
+        } catch (ClientException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

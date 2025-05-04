@@ -33,6 +33,8 @@ public class CompilesServiceImpl implements CompilesService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        // TODO:需要返回项目编译后的可执行文件
+        return null;
     }
 
     private Map<String, List<String>> uncompressProject(Claims claims) throws IOException {
@@ -75,6 +77,9 @@ public class CompilesServiceImpl implements CompilesService {
 
     // gcc src/*.c -Iinclude -Llib -l你的库名 -Wall -o 可执行文件名
     private void startCompilesProcess(CompileConfig option,Map<String,List<String>> projectList) throws IOException {
+        // TODO : 需要准备输出文件名和源文件名
+        String outputFile = "";
+        String sourceFile = "";
         Process process = new ProcessBuilder(
                 option.getCompilerType(),
                 option.getCompilerArgs(),

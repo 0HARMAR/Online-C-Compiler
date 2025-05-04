@@ -12,21 +12,11 @@ import java.io.*;
 import java.util.Random;
 
 public class AliyunOSSOperator {
-    /** 生成一个唯一的 Bucket 名称 */
-    public static String generateUniqueBucketName(String prefix) {
-        // 获取当前时间戳
-        String timestamp = String.valueOf(System.currentTimeMillis());
-        // 生成一个 0 到 9999 之间的随机数
-        Random random = new Random();
-        int randomNum = random.nextInt(10000); // 生成一个 0 到 9999 之间的随机数
-        // 连接以形成一个唯一的 Bucket 名称
-        return prefix + "-" + timestamp + "-" + randomNum;
-    }
 
-    public Result<String> upload(byte[] content, String fileName) throws com.aliyuncs.exceptions.ClientException{
+    public static String upload(byte[] content, String fileName) throws com.aliyuncs.exceptions.ClientException{
         // 设置 OSS Endpoint 和 Bucket 名称
         String endpoint = "https://oss-cn-beijing.aliyuncs.com";
-        String bucketName = generateUniqueBucketName("onlinecc");
+        String bucketName = "onlinecc";
         // 替换为您的 Bucket 区域
         String region = "cn-beijing";
 
@@ -48,9 +38,8 @@ public class AliyunOSSOperator {
             ossClient.createBucket(bucketName);
             System.out.println("1. Bucket " + bucketName + " 创建成功。");
             // 2. 上传文件
-            String objectName = "exampledir/exampleobject.txt";
-            String content = "Hello OSS";
-            ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(content.getBytes()));
+            String objectName = fileName;
+            ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(content));
             System.out.println("2. 文件 " + objectName + " 上传成功。");
             // 3. 下载文件
             OSSObject ossObject = ossClient.getObject(bucketName, objectName);
@@ -69,11 +58,11 @@ public class AliyunOSSOperator {
                 System.out.println(" - " + objectSummary.getKey() + " (大小 = " + objectSummary.getSize() + ")");
             }
             // 5. 删除文件
-            ossClient.deleteObject(bucketName, objectName);
-            System.out.println("5. 文件 " + objectName + " 删除成功。");
+//            ossClient.deleteObject(bucketName, objectName);
+//            System.out.println("5. 文件 " + objectName + " 删除成功。");
             // 6. 删除存储空间（Bucket）
-            ossClient.deleteBucket(bucketName);
-            System.out.println("6. Bucket " + bucketName + " 删除成功。");
+//            ossClient.deleteBucket(bucketName);
+//            System.out.println("6. Bucket " + bucketName + " 删除成功。");
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");
@@ -91,5 +80,6 @@ public class AliyunOSSOperator {
                 ossClient.shutdown();
             }
         }
+        return endpoint.split("//")[0] + "//" + bucketName + "." + endpoint.split("//")[1] + "/" + fileName;
     }
 }

@@ -22,7 +22,9 @@ public class JwtUtils {
     }
 
     public static Claims parseJwt(String jwt){
-        return Jwts.parser().setSigningKey(key).parseClaimsJws(jwt).getBody();
+        // TODO: 需要返回Claims对象
+        return null;
+                //Jwts.parser().setSigningKey(key).parseClaimsJws(jwt).getBody();
     }
 
     public static String getUsername(Claims claims){
