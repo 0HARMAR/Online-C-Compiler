@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.4.4"
 	id("io.spring.dependency-management") version "1.1.7"
+	kotlin("jvm")
 }
 
 group = "com.example"
@@ -37,6 +38,10 @@ dependencies {
 	runtimeOnly ("io.jsonwebtoken:jjwt-jackson:0.11.5")  // Jackson序列化
 
 	implementation ("com.aliyun.oss:aliyun-sdk-oss:3.17.0")
+	implementation(kotlin("stdlib-jdk8"))
+
+	implementation("com.github.docker-java:docker-java-core:3.3.4")
+	implementation("com.github.docker-java:docker-java-transport-httpclient5:3.3.4")
 }
 
 tasks.withType<Test> {

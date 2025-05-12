@@ -1,99 +1,105 @@
-package com.example.demo.service;
+package com.example.demo.service
 
-import com.example.demo.common.JwtUtils;
-import com.example.demo.configuration.FileStorageConfig;
-import com.example.demo.dao.mapper.CompileTaskMapper;
-import com.example.demo.dao.mapper.FileInfoMapper;
-import com.example.demo.model.entity.CompileConfig;
-import com.example.demo.model.entity.CompileTask;
-import io.jsonwebtoken.Claims;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.util.UUID;
+import com.example.demo.common.JwtUtils
+import com.example.demo.configuration.FileStorageConfig
+import com.example.demo.dao.mapper.CompileTaskMapper
+import com.example.demo.dao.mapper.FileInfoMapper
+import com.example.demo.model.entity.CompileConfig
+import com.example.demo.model.entity.CompileTask
+import io.jsonwebtoken.Claims
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.InputStreamResource
+import org.springframework.stereotype.Service
+import java.io.*
+import java.util.*
 
 @Service
-public class CompileServiceImpl implements CompileService{
+class CompileServiceImpl : CompileService {
     @Autowired
-    FileInfoMapper fileInfoMapper;
+    var fileInfoMapper: FileInfoMapper? = null
 
     @Autowired
-    CompileTaskMapper compileTaskMapper;
+    var compileTaskMapper: CompileTaskMapper? = null
 
-    public InputStreamResource preCompile(CompileConfig option, Claims claims) {
-        String userName = JwtUtils.getUsername(claims);
-        String compilePath = findFilePathByOwner(userName);
-        String fileName = findFileNameByOwner(userName);
+    override fun preCompile(option: CompileConfig, claims: Claims): InputStreamResource? {
+        val userName = JwtUtils.getUsername(claims)
+        val compilePath = findFilePathByOwner(userName)
+        val fileName = findFileNameByOwner(userName)
 
         // 创建新编译任务
-        CompileTask compileTask = new CompileTask();
-        String compileTaskId = UUID.randomUUID().toString();
-        compileTask.setTaskId(compileTaskId);
-        compileTaskMapper.addTask(compileTask);
+        val compileTask = CompileTask()
+        val compileTaskId = UUID.randomUUID().toString()
+        compileTask.taskId = compileTaskId
+        compileTaskMapper!!.addTask(compileTask)
 
-        fileInfoMapper.updateFileTaskIdByFileId(findFileIdByOwner(userName),compileTaskId);
+        fileInfoMapper!!.updateFileTaskIdByFileId(findFileIdByOwner(userName), compileTaskId)
 
-        startCompile(option,compilePath,getOutputFilePath(fileName,userName));
+        startCompile(option, compilePath, getOutputFilePath(fileName, userName))
 
-        InputStreamResource outputFile = null;
-        try{
-            outputFile = getOutputFile(userName,fileName);
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        return outputFile;
-    }
-
-    public void startCompile(CompileConfig option,String sourceFile,String outputFile) {
+        var outputFile: InputStreamResource? = null
         try {
-            int exitCode = startCompileProcess(sourceFile,outputFile,option);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            outputFile = getOutputFile(userName, fileName)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return outputFile
+    }
+
+    fun startCompile(option: CompileConfig, sourceFile: String?, outputFile: String?) {
+        try {
+            val exitCode = startCompileProcess(sourceFile, outputFile, option)
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        } catch (e: InterruptedException) {
+            throw RuntimeException(e)
         }
     }
 
-    public static int startCompileProcess(String sourceFile, String outputFile,CompileConfig option) throws IOException, InterruptedException {
-        Process process = new ProcessBuilder(
-                option.getCompilerType(),
-                option.getCompilerArgs(),
+    private fun findFileIdByOwner(owner: String): String {
+        return fileInfoMapper!!.findFileIdByOwner(owner)
+    }
+
+    private fun findFilePathByOwner(userName: String): String {
+        return fileInfoMapper!!.findFilePathByOwner(userName)
+    }
+
+    private fun findFileNameByOwner(userName: String): String {
+        return fileInfoMapper!!.findFileNameByOwner(userName)
+    }
+
+    private fun getOutputFilePath(fileName: String, userName: String): String {
+        val outputPath = FileStorageConfig.getOutputPath(userName)
+        return outputPath + fileName
+    }
+
+    @Throws(IOException::class)
+    fun getOutputFile(userName: String, fileName: String): InputStreamResource {
+        val file = File(getOutputFilePath(fileName, userName))
+
+        val resource = InputStreamResource(FileInputStream(file))
+        return resource
+    }
+
+    companion object {
+        @Throws(IOException::class, InterruptedException::class)
+        fun startCompileProcess(sourceFile: String?, outputFile: String?, option: CompileConfig): Int {
+            val process = ProcessBuilder(
+                option.compilerType,
+                option.compilerArgs,
                 "-o", outputFile,
                 sourceFile
-        ).redirectErrorStream(true).start();
+            ).redirectErrorStream(true).start()
 
-        // 实时获取输出信息
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(process.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println("[GCC] " + line);
+            // 实时获取输出信息
+            val reader = BufferedReader(
+                InputStreamReader(process.inputStream)
+            )
+            var line: String
+            while ((reader.readLine().also { line = it }) != null) {
+                println("[GCC] $line")
+            }
+
+            return process.waitFor()
         }
-
-        return process.waitFor();
-    }
-
-    private String findFileIdByOwner(String owner){
-        return fileInfoMapper.findFileIdByOwner(owner);
-    }
-
-    private String findFilePathByOwner(String userName) {
-        return fileInfoMapper.findFilePathByOwner(userName);
-    }
-
-    private String findFileNameByOwner(String userName) {return fileInfoMapper.findFileNameByOwner(userName);}
-
-    private String getOutputFilePath(String fileName,String userName) {
-        String outputPath = FileStorageConfig.getOutputPath(userName);
-        return outputPath+fileName;
-    }
-    public InputStreamResource getOutputFile(String userName,String fileName) throws IOException {
-        File file = new File(getOutputFilePath(fileName,userName));
-
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-        return resource;
     }
 }
