@@ -1,52 +1,52 @@
-package com.example.demo.model.entity;
+package com.example.demo.model.entity
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import java.time.LocalDateTime;
+import jakarta.persistence.*
+import lombok.AllArgsConstructor
+import lombok.Data
+import lombok.NoArgsConstructor
+import java.time.LocalDateTime
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "compile_task")
-public class CompileTask {
-    public enum Status {
+class CompileTask {
+    enum class Status {
         pending, compiling, success, failed
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id", length = 36)
-    private String taskId;
+    private var taskId: String? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Status status;
+    private var status: Status? = null
 
     @Column(name = "source_path", length = 512)
-    private String sourcePath;
+    private var sourcePath: String? = null
 
     @Column(name = "output_path", length = 512)
-    private String outputPath;
+    private var outputPath: String? = null
 
     @Column(name = "user_id")
-    private Integer userId;
+    private var userId: Int? = null
 
     @Column(name = "created_at", columnDefinition = "DATETIME(3)")
-    private LocalDateTime createdAt;
+    private var createdAt: LocalDateTime? = null
 
     @Column(name = "updated_at", columnDefinition = "DATETIME(3)")
-    private LocalDateTime updatedAt;
+    private var updatedAt: LocalDateTime? = null
 
     @Column(name = "compiler_version", length = 20)
-    private String compilerVersion;
+    private var compilerVersion: String? = null
 
     @Column(name = "execution_time", unique = true)
-    private Integer executionTime;
+    private var executionTime: Int? = null
 
     @Lob
     @Column(name = "error_log", columnDefinition = "TEXT")
-    private String errorLog;
+    private var errorLog: String? = null
 }

@@ -9,10 +9,10 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 
 @Service
-class DockerServiceImpl(private val dockerClient: DockerClient) {
+class DockerServiceImpl(private val dockerClient: DockerClient):DockerService{
 
     // 创建镜像（从Dockerfile）
-    fun buildImage(dockerfilePath: File, tag: String): String {
+    override fun buildImage(dockerfilePath: File, tag: String): String {
         val cmd = dockerClient.buildImageCmd()
             .withDockerfile(dockerfilePath)
             .withTags(setOf(tag))
@@ -37,7 +37,7 @@ class DockerServiceImpl(private val dockerClient: DockerClient) {
     }
 
     // 创建容器
-    fun createContainer(image: String): String {
+    override fun createContainer(image: String): String {
         val container = dockerClient.createContainerCmd(image)
             .withTty(true) // 启用TTY
             .exec()
@@ -45,12 +45,12 @@ class DockerServiceImpl(private val dockerClient: DockerClient) {
     }
 
     // 启动容器
-    fun startContainer(containerId: String) {
+    override fun startContainer(containerId: String) {
         dockerClient.startContainerCmd(containerId).exec()
     }
 
     // 执行命令并获取输出
-    fun execCommand(containerId: String, command: String): String {
+    override fun execCommand(containerId: String, command: String): String {
         val execId = dockerClient.execCreateCmd(containerId)
             .withCmd(command.split(" ").toString())
             .withAttachStdout(true)
