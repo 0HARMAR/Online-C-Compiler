@@ -23,3 +23,7 @@ file:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+
+docker:
+  images:
+    ubuntu: ubuntu-24.04

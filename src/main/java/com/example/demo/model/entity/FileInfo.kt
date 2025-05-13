@@ -1,72 +1,55 @@
-package com.example.demo.model.entity;
+package com.example.demo.model.entity
 
-import lombok.*;
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import jakarta.persistence.*
+import java.time.LocalDateTime
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "file_info")
-public class FileInfo {
-    public enum FileType {
-        C_SOURCE, HEADER, STATIC_LIB, SHARED_LIB, OBJECT, MAKEFILE
-    }
-
-    public enum Encoding {
-        UTF_8("utf8"), GBK("gbk"), ASCII("ascii");
-
-        private final String encoding;
-        Encoding(String encoding) {
-            this.encoding = encoding;
-        }
-
-        public String getEncoding() {
-            return encoding;
-        }
-    }
-
+data class FileInfo(
     @Id
     @Column(name = "file_id", length = 36)
-    @NonNull
-    private String fileId;
+    var fileId: String? = null,  // 主键推荐用 val
 
     @Column(name = "task_id", length = 36)
-    private String taskId;
+    var taskId: String? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "file_type", nullable = false)
-    @NonNull
-    private FileType fileType;
+    var fileType: FileType? = null,
 
     @Column(name = "file_path", nullable = false, length = 512)
-    @NonNull
-    private String filePath;
+    var filePath: String? = null,
 
     @Column(name = "file_name", insertable = false, updatable = false)
-    private String fileName;
+    var fileName: String? = null,
 
     @Column(name = "file_size", nullable = false)
-    @NonNull
-    private Long fileSize;
+    var fileSize: Long? = null,
 
     @Column(name = "hash_sha256", nullable = false, length = 64)
-    @NonNull
-    private String hashSha256;
+    var hashSha256: String? = null,
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "encoding")
-    private String encoding = Encoding.UTF_8.encoding;
+    var encoding: Encoding = Encoding.UTF_8,  // 直接使用枚举类型
 
     @Column(name = "has_bom")
-    private Boolean hasBom = false;
+    var hasBom: Boolean = false,
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    var createdAt: LocalDateTime? = null,
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    var updatedAt: LocalDateTime? = null,
 
     @Column(name = "owner")
-    private String owner;
+    var owner: String? = null
+) {
+    enum class FileType {
+        C_SOURCE, HEADER, STATIC_LIB, SHARED_LIB, OBJECT, MAKEFILE
+    }
+
+    enum class Encoding(val value: String) {
+        UTF_8("utf8"), GBK("gbk"), ASCII("ascii")
+    }
 }

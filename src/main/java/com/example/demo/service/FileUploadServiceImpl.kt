@@ -52,9 +52,9 @@ class FileUploadServiceImpl : FileUploadService {
         }
         // 获取encoding
         when (encoding) {
-            "utf8" -> fileInfo.encoding = FileInfo.Encoding.UTF_8.encoding
-            "gbk" -> fileInfo.encoding = FileInfo.Encoding.GBK.encoding
-            "ascii" -> fileInfo.encoding = FileInfo.Encoding.ASCII.encoding
+            "utf8" -> fileInfo.encoding = FileInfo.Encoding.UTF_8
+            "gbk" -> fileInfo.encoding = FileInfo.Encoding.GBK
+            "ascii" -> fileInfo.encoding = FileInfo.Encoding.ASCII
         }
         // 获取createAt
         fileInfo.createdAt = LocalDateTime.now()

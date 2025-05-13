@@ -1,15 +1,21 @@
 package com.example.demo.service
 
+import com.example.demo.configuration.DockerConfig
 import com.github.dockerjava.api.DockerClient
 import com.github.dockerjava.api.async.ResultCallback
+import com.github.dockerjava.api.exception.NotFoundException
 import com.github.dockerjava.api.model.BuildResponseItem
 import com.github.dockerjava.api.model.Frame
+import lombok.Value
 import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
 import java.io.File
 
 @Service
-class DockerServiceImpl(private val dockerClient: DockerClient):DockerService{
+class DockerServiceImpl(
+    private val dockerClient: DockerClient,
+    private val dockerConfig: DockerConfig
+) : DockerService {
 
     // 创建镜像（从Dockerfile）
     override fun buildImage(dockerfilePath: File, tag: String): String {
@@ -66,5 +72,19 @@ class DockerServiceImpl(private val dockerClient: DockerClient):DockerService{
         }).awaitCompletion()
 
         return output.toString()
+    }
+
+    override fun stopContainer(containerId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun haveUbuntuImage(): Boolean {
+        return try {
+            val imageName: String = dockerConfig.ubuntu
+            dockerClient.inspectImageCmd(imageName).exec()
+            true
+        } catch (e: NotFoundException) {
+            false
+        }
     }
 }

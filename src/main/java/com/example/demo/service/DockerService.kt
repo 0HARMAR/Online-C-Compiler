@@ -40,4 +40,10 @@ interface DockerService {
      * @param containerId The ID of the container
      */
     fun stopContainer(containerId: String)
+
+    /**
+     * Check if there is an ubuntu image
+     * @return The Boolean result
+     */
+    fun haveUbuntuImage(): Boolean
 }

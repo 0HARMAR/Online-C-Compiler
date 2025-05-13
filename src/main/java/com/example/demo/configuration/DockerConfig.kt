@@ -6,11 +6,14 @@ import com.github.dockerjava.core.DefaultDockerClientConfig
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import com.github.dockerjava.core.DockerClientImpl
 import com.github.dockerjava.transport.DockerHttpClient
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
+@ConfigurationProperties(prefix = "docker.images")
 open class DockerConfig {
+    lateinit var ubuntu: String
     @Bean
     open fun dockerClient(): DockerClient {
         val config: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder().build()

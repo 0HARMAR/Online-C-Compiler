@@ -7,7 +7,7 @@ import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import java.util.concurrent.ConcurrentHashMap
 
-class TerminalWebSocketHandler(
+open class TerminalWebSocketHandler(
     private val dockerService: DockerService
 ) : TextWebSocketHandler() {
 

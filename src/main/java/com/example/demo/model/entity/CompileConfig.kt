@@ -1,15 +1,7 @@
-package com.example.demo.model.entity;
+package com.example.demo.model.entity
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class CompileConfig {
-    private String compilerType;
-    private String compilerVersion;
-    private String compilerArgs;
-
-}
+data class CompileConfig(
+    var compilerType: String? = null,
+    var compilerVersion: String? = null,
+    var compilerArgs: String? = null
+)
