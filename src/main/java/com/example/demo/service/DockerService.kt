@@ -46,4 +46,12 @@ interface DockerService {
      * @return The Boolean result
      */
     fun haveUbuntuImage(): Boolean
+
+    /**
+     * check whether you have an ubuntu container
+     * if not create a container,returned the container id
+     * if you have returned the first container id
+     * @return The container id
+     */
+    fun findOrCreateUbuntuContainer(): String
 }

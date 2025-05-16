@@ -6,7 +6,6 @@ import com.github.dockerjava.api.async.ResultCallback
 import com.github.dockerjava.api.exception.NotFoundException
 import com.github.dockerjava.api.model.BuildResponseItem
 import com.github.dockerjava.api.model.Frame
-import lombok.Value
 import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -86,5 +85,26 @@ class DockerServiceImpl(
         } catch (e: NotFoundException) {
             false
         }
+    }
+
+    override fun findOrCreateUbuntuContainer(): String {
+        // 检查现有容器 (包含已停止的容器)
+        val containers = dockerClient.listContainersCmd()
+            .withShowAll(true) // 包含所有状态的容器
+            .withStatusFilter(listOf("created", "running", "exited")) // 按需过滤状态
+            .exec()
+
+        // 查找匹配镜像的容器
+        val existingContainer = containers.firstOrNull { container ->
+            container.image == dockerConfig.ubuntu // 假设配置中存储了镜像名
+        }
+
+        // 直接返回现有容器ID
+        if (existingContainer != null) {
+            return existingContainer.id
+        }
+
+        // 创建新容器（不自动启动）
+        return createContainer(dockerConfig.ubuntu)
     }
 }
