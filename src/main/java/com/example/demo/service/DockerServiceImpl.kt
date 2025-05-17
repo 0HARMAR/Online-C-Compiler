@@ -121,7 +121,7 @@ class DockerServiceImpl(
         return execId
     }
 
-    fun interactWithSession(terminalExecId: String,command: String): String {
+    override fun interactWithSession(terminalExecId: String,command: String): String {
         val output = ByteArrayOutputStream()
         // 启动会话并绑定输入输出流
         val execStartCmd = dockerClient.execStartCmd(terminalExecId).withTty(true)
