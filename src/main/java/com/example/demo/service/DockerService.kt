@@ -58,7 +58,7 @@ interface DockerService {
     /**
      * create a terminal session by containerId
      * @param containerId
-     * @return the [ExecSession] object
+     * @return the terminalExecId
      */
-    fun createTerminalSession(containerId: String): ExecSession
+    fun createTerminalSession(containerId: String): String
 }
