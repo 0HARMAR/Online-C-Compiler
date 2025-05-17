@@ -107,4 +107,56 @@ class DockerServiceImpl(
         // 创建新容器（不自动启动）
         return createContainer(dockerConfig.ubuntu)
     }
+
+    fun createTerminalSession(containerId: String): ExecSession {
+        val execId = dockerClient.execCreateCmd(containerId)
+            .withCmd("/bin/bash")
+            .withAttachStdin(true)
+            .withAttachStdout(true)
+            .withAttachStderr(true)
+            .withTty(true)
+            .exec()
+            .id
+
+        return ExecSession(
+            dockerClient = dockerClient,
+            execId = execId
+        )
+    }
+
+    fun interactWithSession(session: ExecSession) {
+        // 启动会话并绑定输入输出流
+        val execStartCmd = session.dockerClient.execStartCmd(session.execId).withTty(true)
+        val result = execStartCmd.exec()
+
+        // 输入输出流处理
+        val stdin: OutputStream = result.standardInput
+        val stdout: InputStream = result.standardOutput
+
+        // 启动线程读取输出
+        Thread {
+            val buffer = ByteArray(1024)
+            while (true) {
+                val bytesRead = stdout.read(buffer)
+                if (bytesRead > 0) {
+                    val output = String(buffer, 0, bytesRead)
+                    print(output) // 显示容器返回的输出
+                }
+            }
+        }.start()
+
+        // 主线程读取用户输入并发送到容器
+        val scanner = Scanner(System.`in`)
+        while (true) {
+            print("> ") // 模拟终端提示符
+            val command = scanner.nextLine()
+            stdin.write("$command\n".toByteArray()) // 注意添加换行符（相当于按回车）
+            stdin.flush()
+        }
+    }
 }
+
+data class ExecSession(
+    val dockerClient: DockerClient,
+    val execId: String
+)

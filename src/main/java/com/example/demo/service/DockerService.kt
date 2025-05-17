@@ -54,4 +54,11 @@ interface DockerService {
      * @return The container id
      */
     fun findOrCreateUbuntuContainer(): String
+
+    /**
+     * create a terminal session by containerId
+     * @param containerId
+     * @return the [ExecSession] object
+     */
+    fun createTerminalSession(containerId: String): ExecSession
 }
