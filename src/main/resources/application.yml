@@ -27,3 +27,4 @@ mybatis:
 docker:
   images:
     ubuntu: ubuntu-24.04
+  host: npipe:////./pipe/docker_engine

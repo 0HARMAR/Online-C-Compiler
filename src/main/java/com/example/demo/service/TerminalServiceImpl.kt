@@ -9,7 +9,7 @@ class TerminalServiceImpl(
     override fun createTerminal() {
         if(dockerService.haveUbuntuImage()){
             val terminalId :String = dockerService.findOrCreateUbuntuContainer()
-
+            println(terminalId)
         }
         else{
             TODO()

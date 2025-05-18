@@ -45,6 +45,8 @@ dependencies {
 	implementation("com.github.docker-java:docker-java-transport-httpclient5:3.3.4")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
 
+	implementation("org.apache.httpcomponents.core5:httpcore5-h2:5.2.2")
+
 }
 
 tasks.withType<Test> {
