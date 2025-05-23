@@ -14,7 +14,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/online_c_compiler
     username: root
-    password: 345258
+    password: Hemingyang321!
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 file:
