@@ -34,7 +34,9 @@ public class CompileController {
             @RequestBody CompileConfig option,
             @RequestAttribute("jwtClaims") Claims claims) {
         InputStreamResource outputFile = compileServiceImpl.preCompile(option,claims);
-        return new ResponseEntity<>(Result.success("编译成功"),HttpStatus.OK);
+        // TODO: 返回OSS下载链接
+        String outputUrl = "http://localhost:8080/download"; // 假设下载地址为此
+        return new ResponseEntity<>(Result.success(outputUrl),HttpStatus.OK);
     }
 
     @PostMapping("/compiles")

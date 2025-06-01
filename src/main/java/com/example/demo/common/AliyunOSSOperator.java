@@ -57,12 +57,6 @@ public class AliyunOSSOperator {
             for (OSSObjectSummary objectSummary : objectListing.getObjectSummaries()) {
                 System.out.println(" - " + objectSummary.getKey() + " (大小 = " + objectSummary.getSize() + ")");
             }
-            // 5. 删除文件
-//            ossClient.deleteObject(bucketName, objectName);
-//            System.out.println("5. 文件 " + objectName + " 删除成功。");
-            // 6. 删除存储空间（Bucket）
-//            ossClient.deleteBucket(bucketName);
-//            System.out.println("6. Bucket " + bucketName + " 删除成功。");
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");

@@ -42,7 +42,8 @@ class OnlineCCompilerApplicationTests {
 	@Test
 	public void testOSS(){
         try {
-            AliyunOSSOperator.upload("hello".getBytes(),"hello.txt");
+            String url = AliyunOSSOperator.upload("hello".getBytes(),"hello.txt");
+			System.out.println(url);
         } catch (ClientException e) {
             throw new RuntimeException(e);
         }
