@@ -19,6 +19,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User addUser(User user) {
+        JwtUtils.id = Math.toIntExact(user.getId());
+        JwtUtils.password = user.getPassword();
+        JwtUtils.username = user.getName();
         String token = JwtUtils.generateJwt();
         user.setToken(token);
         userMapper.addUser(user);

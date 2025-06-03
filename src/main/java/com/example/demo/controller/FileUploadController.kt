@@ -20,11 +20,12 @@ class FileUploadController {
     @PostMapping("/upload")
     fun handleFileUpload(
         @RequestParam("file") file: MultipartFile,
-        @RequestParam("encoding") encoding: String?,
         @RequestAttribute("jwtClaims") claims: Claims?
-    ): ResponseEntity<String> {
+    ): ResponseEntity<Result<String>> {
         claims?.let { encoding?.let { it1 -> fileUploadServiceImpl!!.saveFile(file, it, it1) } }
-        return ResponseEntity.ok("文件上传成功: " + file.originalFilename)
+        // TODO 返回上传文件下载地址
+        String uploadUrl = ""
+        return ResponseEntity.ok(Result.success(uploadUrl))
     }
 
     @PostMapping("/uploads")
