@@ -6,5 +6,5 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface CompileService {
-    InputStreamResource preCompile(CompileConfig option, Claims claims);
+    String compile(CompileConfig option, String token,String fileId);
 }

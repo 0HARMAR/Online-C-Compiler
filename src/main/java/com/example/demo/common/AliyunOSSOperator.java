@@ -36,27 +36,18 @@ public class AliyunOSSOperator {
         try {
             // 1. 创建存储空间（Bucket）
             ossClient.createBucket(bucketName);
-            System.out.println("1. Bucket " + bucketName + " 创建成功。");
             // 2. 上传文件
             String objectName = fileName;
             ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(content));
-            System.out.println("2. 文件 " + objectName + " 上传成功。");
             // 3. 下载文件
             OSSObject ossObject = ossClient.getObject(bucketName, objectName);
             InputStream contentStream = ossObject.getObjectContent();
             BufferedReader reader = new BufferedReader(new InputStreamReader(contentStream));
             String line;
-            System.out.println("3. 下载的文件内容：");
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
             }
             contentStream.close();
-            // 4. 列出文件
-            System.out.println("4. 列出 Bucket 中的文件：");
-            ObjectListing objectListing = ossClient.listObjects(bucketName);
-            for (OSSObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-                System.out.println(" - " + objectSummary.getKey() + " (大小 = " + objectSummary.getSize() + ")");
-            }
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");

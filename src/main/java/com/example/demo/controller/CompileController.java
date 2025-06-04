@@ -27,13 +27,14 @@ import java.nio.file.Files;
 @RestController
 public class CompileController {
     @Autowired
-    private CompileServiceImpl compileServiceImpl;
+    private CompileService compileService;
 
     @PostMapping("/compile")
     public ResponseEntity<Result<String>> handleCompile(
             @RequestBody CompileConfig option,
-            @RequestAttribute("jwtClaims") Claims claims) {
-        InputStreamResource outputFile = compileServiceImpl.preCompile(option,claims);
+            @RequestHeader("token") String token,
+            @RequestParam String fileId) {
+        InputStreamResource outputFile = compileService.preCompile(option,token,fileId);
         // TODO: 返回OSS下载链接
         String outputUrl = "http://localhost:8080/download"; // 假设下载地址为此
         return new ResponseEntity<>(Result.success(outputUrl),HttpStatus.OK);

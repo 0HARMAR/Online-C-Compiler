@@ -21,9 +21,9 @@ class CompileServiceImpl : CompileService {
     @Autowired
     var compileTaskMapper: CompileTaskMapper? = null
 
-    override fun preCompile(option: CompileConfig, claims: Claims): InputStreamResource? {
-        val userName = JwtUtils.getUsername(claims)
-        val compilePath = findFilePathByOwner(userName)
+    override fun compile(option: CompileConfig, token : String,fileId: String): String {
+        val userName = JwtUtils.getUsername(JwtUtils.parseJwt(token))
+        val compilePath = findFileByFileId(fileId)
         val fileName = findFileNameByOwner(userName)
 
         // 创建新编译任务
@@ -43,6 +43,10 @@ class CompileServiceImpl : CompileService {
             e.printStackTrace()
         }
         return outputFile
+    }
+
+    private fun findFileByFileId(fileId: String) {
+        fileInfoMapper.findFileByFileId(fileId)
     }
 
     fun startCompile(option: CompileConfig, sourceFile: String?, outputFile: String?) {

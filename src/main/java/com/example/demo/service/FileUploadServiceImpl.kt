@@ -1,5 +1,6 @@
 package com.example.demo.service
 
+import com.example.demo.common.AliyunOSSOperator
 import com.example.demo.common.JwtUtils
 import com.example.demo.configuration.FileStorageConfig
 import com.example.demo.dao.mapper.FileInfoMapper
@@ -23,22 +24,17 @@ class FileUploadServiceImpl : FileUploadService {
     @Autowired
     private val fileInfoMapper: FileInfoMapper? = null
 
-    override fun saveFile(file: MultipartFile, claims: Claims, encoding: String) {
+    override fun saveFile(file: MultipartFile, token: String): String {
         // 检查文件是否为空
         if (file.isEmpty) {
             throw BusinessException(ErrorCode.FILE_NOT_FOUND)
         }
-        // 获取文件存储路径
-        val userName = JwtUtils.getUsername(claims)
-        val uploadPath = FileStorageConfig.getUploadPath(userName)
 
         val fileInfo = FileInfo()
         // 获取fileId
         val fileId = UUID.randomUUID().toString()
         // 获取fileType
         val fileType = getFileType(file)
-        // 获取filePath
-        val filePath = getFilePath(file, uploadPath)
         // 获取fileName
         val fileName = file.originalFilename
         // 获取fileSize
@@ -51,6 +47,7 @@ class FileUploadServiceImpl : FileUploadService {
             throw RuntimeException(e)
         }
         // 获取encoding
+        var encoding = "utf8" // 默认编码为UTF-8
         when (encoding) {
             "utf8" -> fileInfo.encoding = FileInfo.Encoding.UTF_8
             "gbk" -> fileInfo.encoding = FileInfo.Encoding.GBK
@@ -61,22 +58,21 @@ class FileUploadServiceImpl : FileUploadService {
         // 获取updateAt
         fileInfo.updatedAt = LocalDateTime.now()
         // 获取所有者
+        val userName = JwtUtils.getUsername(JwtUtils.parseJwt(token))
         fileInfo.owner = userName
 
         fileInfo.fileId = fileId
         fileInfo.fileType = fileType
         fileInfo.fileSize = fileSize
-        fileInfo.filePath = filePath
         fileInfo.fileName = fileName
         fileInfo.hashSha256 = hashSha256
         fileInfoMapper!!.addFile(fileInfo)
 
-        // 将文件保存到本地
-        try {
-            file.transferTo(File(getFilePath(file, uploadPath)))
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        }
+        // 将文件保存到OSS
+        val content : ByteArray = file.bytes
+        val uploadUrl = AliyunOSSOperator.upload(content,fileName)
+
+        return uploadUrl
     }
 
     private fun getFileType(file: MultipartFile): FileInfo.FileType {
@@ -98,11 +94,6 @@ class FileUploadServiceImpl : FileUploadService {
             "mk", "makefile" -> FileInfo.FileType.MAKEFILE
             else -> throw BusinessException(ErrorCode.FILE_NOT_ALLOWED)
         }
-    }
-
-    private fun getFilePath(file: MultipartFile, uploadPath: String): String {
-        val fileName = if (file.originalFilename != null) file.originalFilename else "unknown"
-        return "$uploadPath/$fileName"
     }
 
     // SHA256计算方法

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.example.demo.model.entity.FileInfo;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.jetbrains.annotations.NotNull;
 
 @Mapper
 public interface FileInfoMapper {
@@ -34,4 +35,7 @@ public interface FileInfoMapper {
 
     @Select("select file_name from file_info where owner = #{owner}")
     String findFileNameByOwner(String owner);
+
+    String findFileByFileId(@NotNull String fileId);
 }
+

@@ -4,5 +4,5 @@ import io.jsonwebtoken.Claims;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileUploadService {
-    void saveFile(MultipartFile file, Claims claims, String encoding);
+    String saveFile(MultipartFile file, String token);
 }
