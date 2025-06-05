@@ -36,6 +36,7 @@ public interface FileInfoMapper {
     @Select("select file_name from file_info where owner = #{owner}")
     String findFileNameByOwner(String owner);
 
+    @Select("select file_url from file_info where file_id = #{fileId}")
     String findFileByFileId(@NotNull String fileId);
 }
 

@@ -34,9 +34,8 @@ public class CompileController {
             @RequestBody CompileConfig option,
             @RequestHeader("token") String token,
             @RequestParam String fileId) {
-        InputStreamResource outputFile = compileService.preCompile(option,token,fileId);
-        // TODO: 返回OSS下载链接
-        String outputUrl = "http://localhost:8080/download"; // 假设下载地址为此
+        // 返回编译结果OSS下载链接
+        String outputUrl = compileService.preCompile(option,token,fileId);
         return new ResponseEntity<>(Result.success(outputUrl),HttpStatus.OK);
     }
 
