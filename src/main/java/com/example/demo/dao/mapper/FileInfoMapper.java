@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 @Mapper
 public interface FileInfoMapper {
     @Insert({
-        "INSERT INTO file_info (file_id, file_type, file_path, file_size, hash_sha256, encoding,owner)",
+        "INSERT INTO file_info (file_id, file_type, file_url, file_size, hash_sha256, encoding,owner)",
         "VALUES (",
-        "#{fileId}, #{fileType}, #{filePath}, #{fileSize}, #{hashSha256},",
+        "#{fileId}, #{fileType}, #{fileUrl}, #{fileSize}, #{hashSha256},",
         "#{encoding},#{owner})"
     })
     public void addFile(FileInfo fileInfo);

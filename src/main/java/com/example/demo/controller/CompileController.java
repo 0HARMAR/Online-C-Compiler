@@ -35,7 +35,7 @@ public class CompileController {
             @RequestHeader("token") String token,
             @RequestParam String fileId) {
         // 返回编译结果OSS下载链接
-        String outputUrl = compileService.preCompile(option,token,fileId);
+        String outputUrl = compileService.compile(option,token,fileId);
         return new ResponseEntity<>(Result.success(outputUrl),HttpStatus.OK);
     }
 
@@ -46,34 +46,4 @@ public class CompileController {
         return new ResponseEntity<>(Result.success("编译成功"),HttpStatus.OK);
     }
 
-    @PostMapping("/download")
-    public ResponseEntity<InputStreamResource> handleDownload(
-            @RequestAttribute("jwtClaims") Claims claims
-    ) throws IOException {
-        String userName = JwtUtils.getUsername(claims);
-        String outputFilePath = FileStorageConfig.getOutputPath(userName);
-        File file = new File(outputFilePath);
-
-        // 构建响应头
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"");
-        headers.add(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
-        headers.add(HttpHeaders.PRAGMA, "no-cache");
-        headers.add(HttpHeaders.EXPIRES, "0");
-
-        // 检测mime类型
-        MediaType contentType = MediaType.parseMediaType(
-                Files.probeContentType(file.toPath()) // 自动检测
-        );
-        if (contentType == null) {
-            contentType = MediaType.APPLICATION_OCTET_STREAM; // 默认类型
-        }
-
-        InputStreamResource resource = compileServiceImpl.getOutputFile(userName,outputFilePath);
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(contentType)
-                .contentLength(file.length())
-                .body(resource);
-    }
 }

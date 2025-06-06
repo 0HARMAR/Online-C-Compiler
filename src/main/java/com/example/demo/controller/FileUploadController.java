@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.common.Result;
+import com.example.demo.common.UploadResult;
 import com.example.demo.service.FileUploadService;
 import com.example.demo.service.FileUploadServiceImpl;
 import io.jsonwebtoken.Claims;
@@ -18,12 +19,12 @@ public class FileUploadController {
     private FileUploadService fileUploadService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Result<String>> handleFileUpload(
+    public ResponseEntity<Result<UploadResult>> handleFileUpload(
             @RequestParam("file") MultipartFile file,
             @RequestHeader("token") String token
     ) {
-        String uploadUrl = fileUploadService.saveFile(file, token);;
-        return ResponseEntity.ok(Result.success(uploadUrl));
+        UploadResult uploadResult = fileUploadService.saveFile(file, token);;
+        return ResponseEntity.ok(Result.success(uploadResult));
     }
 
 }

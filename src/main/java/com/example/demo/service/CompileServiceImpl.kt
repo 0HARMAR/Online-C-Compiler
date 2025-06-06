@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 import java.io.*
 import java.util.*
 import java.time.LocalDateTime
-import com.example.demo.util.AliyunOSSOperator
+import com.example.demo.common.AliyunOSSOperator
 
 @Service
 class CompileServiceImpl : CompileService {

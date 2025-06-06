@@ -14,7 +14,6 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class JwtUtils {
     private static final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
