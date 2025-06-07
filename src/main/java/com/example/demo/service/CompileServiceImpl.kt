@@ -73,6 +73,7 @@ class CompileServiceImpl : CompileService {
             command.add(outputFile.absolutePath)
             command.add(sourceFile.absolutePath)
 
+            println(command)
             // 启动编译进程
             val process = ProcessBuilder(command)
                 .redirectErrorStream(true)

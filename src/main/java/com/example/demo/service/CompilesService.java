@@ -6,5 +6,13 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 
 public interface CompilesService {
-    InputStreamResource handleCompiles(CompileConfig option, Claims claims);
+    /**
+     * Compiles the provided source project code based on the given configuration.
+     *
+     * @param option The compilation configuration, including compiler options and settings.
+     * @param token  The JWT token used for authentication and authorization.
+     * @param fileId The unique identifier of the file to be compiled.
+     * @return the compile output download URL.
+     */
+    String compiles(CompileConfig option, String token, String fileId);
 }
