@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
@@ -87,6 +88,61 @@ public class FileUploadServiceImpl implements FileUploadService {
         try {
             uploadUrl = AliyunOSSOperator.upload(content, fileName);
         } catch (ClientException e) {
+            throw new RuntimeException(e);
+        }
+        fileInfo.setFileUrl(uploadUrl);
+        fileInfoMapper.addFile(fileInfo);
+        return new UploadResult(uploadUrl, fileId);
+    }
+
+    public UploadResult saveFile(File file, String token) {
+        if (file == null || !file.exists() || file.length() == 0) {
+            throw new BusinessException(ErrorCode.FILE_NOT_FOUND);
+        }
+
+        FileInfo fileInfo = new FileInfo();
+        String fileId = UUID.randomUUID().toString();
+        String fileName = file.getName();
+        long fileSize = file.length();
+        String hashSha256;
+        try {
+            hashSha256 = calculateSHA256(java.nio.file.Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String encoding = "utf8";
+        switch (encoding) {
+            case "utf8":
+                fileInfo.setEncoding(FileInfo.Encoding.UTF_8);
+                break;
+            case "gbk":
+                fileInfo.setEncoding(FileInfo.Encoding.GBK);
+                break;
+            case "ascii":
+                fileInfo.setEncoding(FileInfo.Encoding.ASCII);
+                break;
+        }
+        fileInfo.setCreatedAt(LocalDateTime.now());
+        fileInfo.setUpdatedAt(LocalDateTime.now());
+        String userName = JwtUtils.getUsername(JwtUtils.parseJwt(token));
+        fileInfo.setOwner(userName);
+
+        fileInfo.setFileId(fileId);
+        fileInfo.setFileType(determineFileType(org.springframework.util.StringUtils.getFilenameExtension(fileName)));
+        fileInfo.setFileSize(fileSize);
+        fileInfo.setFileName(fileName);
+        fileInfo.setHashSha256(hashSha256);
+
+        String uploadUrl;
+        byte[] content;
+        try {
+            content = java.nio.file.Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            uploadUrl = AliyunOSSOperator.upload(content, fileName);
+        } catch (com.aliyuncs.exceptions.ClientException e) {
             throw new RuntimeException(e);
         }
         fileInfo.setFileUrl(uploadUrl);

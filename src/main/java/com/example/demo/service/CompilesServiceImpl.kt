@@ -75,6 +75,7 @@ class CompilesServiceImpl : CompilesService {
 
     }
 
+    // Demo : gcc src/*.c -Iinclude -Llib  -o output
     private fun constructCommand(option: CompileConfig?,projectMap: MutableMap<String?, MutableList<String?>?>?): String {
         // TODO: 根据编译选项和项目结构构建编译命令
         return TODO("Provide the return value")

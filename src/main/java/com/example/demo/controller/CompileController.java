@@ -4,6 +4,7 @@ import com.example.demo.common.JwtUtils;
 import com.example.demo.common.Result;
 import com.example.demo.configuration.FileStorageConfig;
 import com.example.demo.model.entity.CompileConfig;
+import com.example.demo.service.CompileResult;
 import com.example.demo.service.CompileServiceImpl;
 import io.jsonwebtoken.Claims;
 import org.springframework.core.io.InputStreamResource;
@@ -30,13 +31,13 @@ public class CompileController {
     private CompileService compileService;
 
     @PostMapping("/compile")
-    public ResponseEntity<Result<String>> handleCompile(
+    public ResponseEntity<Result<CompileResult>> handleCompile(
             @RequestBody CompileConfig option,
             @RequestHeader("token") String token,
             @RequestParam String fileId) {
         // 返回编译结果OSS下载链接
-        String outputUrl = compileService.compile(option,token,fileId);
-        return new ResponseEntity<>(Result.success(outputUrl),HttpStatus.OK);
+        CompileResult compileResult = compileService.compile(option,token,fileId);
+        return new ResponseEntity<>(Result.success(compileResult),HttpStatus.OK);
     }
 
     @PostMapping("/compiles")

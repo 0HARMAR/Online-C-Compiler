@@ -18,6 +18,6 @@ public interface CompileService {
      * @param fileId The unique identifier of the file to be compiled.
      * @return the compile output download URL.
      */
-    String compile(CompileConfig option, String token, String fileId);
+    CompileResult compile(CompileConfig option, String token, String fileId);
 
 }

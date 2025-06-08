@@ -14,16 +14,23 @@ import java.io.*
 import java.util.*
 import java.time.LocalDateTime
 import com.example.demo.common.AliyunOSSOperator
+import com.example.demo.common.UploadResult
 
 @Service
 class CompileServiceImpl : CompileService {
+    @Autowired
+    private lateinit var fileUploadService: FileUploadService
+
     @Autowired
     private lateinit var fileInfoMapper: FileInfoMapper
 
     @Autowired
     private lateinit var compileTaskMapper: CompileTaskMapper
 
-    override fun compile(option: CompileConfig, token: String, fileId: String): String {
+    @Autowired
+    private lateinit var FileUploadService: FileUploadService
+
+    override fun compile(option: CompileConfig, token: String, fileId: String): CompileResult {
         val userName = JwtUtils.getUsername(JwtUtils.parseJwt(token))
         val sourceFileUrl = fileInfoMapper.findFileByFileId(fileId)
             ?: throw RuntimeException("File not found")
@@ -41,9 +48,9 @@ class CompileServiceImpl : CompileService {
 
         try {
             // 下载源文件并编译
-            val result = startCompile(option, sourceFileUrl)
+            val result = startCompile(option, sourceFileUrl,token)
             compileTask.status = CompileTask.Status.compiling            
-            return result.outputFileUrl
+            return result
         } catch (e: Exception) {
             compileTask.status = CompileTask.Status.failed
             throw e
@@ -51,7 +58,7 @@ class CompileServiceImpl : CompileService {
     }
 
     // 返回编译结果
-    private fun startCompile(option: CompileConfig, sourceFileUrl: String?): CompileResult {
+    private fun startCompile(option: CompileConfig, sourceFileUrl: String?,token: String): CompileResult {
         if (sourceFileUrl == null) {
             throw IllegalArgumentException("Source file URL cannot be null")
         }
@@ -90,10 +97,13 @@ class CompileServiceImpl : CompileService {
 
             // 等待编译完成
             val exitCode = process.waitFor()
-            
+
+            // 将编译结果上传至OSS并保存文件信息
+            val uploadResult: UploadResult = fileUploadService.saveFile(outputFile,token)
             return CompileResult(
                 exitCode = exitCode,
-                outputFileUrl = AliyunOSSOperator.upload(outputFile.readBytes(), outputFile.name)
+                outputFileUrl = uploadResult.uploadUrl,
+                fileId = uploadResult.fileId
             )
         } finally {
             // 清理临时文件
@@ -106,4 +116,5 @@ class CompileServiceImpl : CompileService {
 data class CompileResult(
     val exitCode: Int,
     val outputFileUrl: String,
+    val fileId: String
 )
