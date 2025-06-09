@@ -31,53 +31,85 @@ class CompilesServiceImpl : CompilesService {
      * @return project structure map
      * like {"src":[file1, file2], "include":[file3,file4], "lib":[file5,file6]}
      */
-    private fun uncompressProject(uploadsUrl: String): MutableMap<String?, MutableList<String?>?> {
-        val directoryMap: MutableMap<String?, MutableList<String?>?> = HashMap<String?, MutableList<String?>?>()
-        val project: File = FileDownloadUtil.downloadFile(uploadsUrl)
+    private fun uncompressProject(uploadsUrl: String): Pair<File, MutableMap<String, MutableList<String>>> {
+        val directoryMap = mutableMapOf<String, MutableList<String>>()
+        val projectZip: File = FileDownloadUtil.downloadFile(uploadsUrl)
+        val tempDir = createTempDir(prefix = "project_")
 
-        ZipFile(project).use { zip ->
+        ZipFile(projectZip).use { zip ->
             val entries = zip.entries()
             while (entries.hasMoreElements()) {
-                val entry: ZipEntry = entries.nextElement()
-
-                if (entry.isDirectory()) {
-                    continue  // 跳过目录条目
+                val entry = entries.nextElement()
+                val outFile = File(tempDir, entry.name)
+                if (entry.isDirectory) {
+                    outFile.mkdirs()
+                    continue
+                } else {
+                    outFile.parentFile.mkdirs()
+                    zip.getInputStream(entry).use { input ->
+                        outFile.outputStream().use { output -> input.copyTo(output) }
+                    }
                 }
-
-                val fullPath = entry.getName()
-                val lastSlashIndex = fullPath.lastIndexOf('/')
-
-                var directory = ""
-                var filename = fullPath
-
-                if (lastSlashIndex != -1) {
-                    directory = fullPath.substring(0, lastSlashIndex)
-                    filename = fullPath.substring(lastSlashIndex + 1)
-                }
-
-                // 将文件名添加到对应的目录列表中
-                directoryMap
-                    .computeIfAbsent(directory) { k: kotlin.String? -> java.util.ArrayList<kotlin.String?>() }!!
-                    .add(filename)
+                val dir = outFile.parentFile.relativeTo(tempDir).path.ifEmpty { "." }
+                directoryMap.computeIfAbsent(dir) { mutableListOf() }.add(outFile.name)
             }
         }
-        return directoryMap
+        return Pair(tempDir, directoryMap)
     }
 
-    override fun compiles(
-        option: CompileConfig?,
-        token: String?,
-        fileId: String?
-    ): String? {
-        val uploadsUrl: String = fileInfoMapper.findFileByFileId(fileId.toString())
-        val projectMap: MutableMap<String?, MutableList<String?>?> = uncompressProject(uploadsUrl)
-
-
+    override fun compiles(option: CompileConfig?, token: String?, fileId: String?): String? {
+        val uploadsUrl = fileInfoMapper.findFileByFileId(fileId.toString())
+        val (projectDir, projectMap) = uncompressProject(uploadsUrl)
+        try {
+            val command = constructCommand(option, projectDir)
+            val process = ProcessBuilder(command)
+                .directory(projectDir)
+                .redirectErrorStream(true)
+                .start()
+            val output = process.inputStream.bufferedReader().readText()
+            process.waitFor()
+            return output
+        } finally {
+            projectDir.deleteRecursively()
+        }
     }
 
-    // Demo : gcc src/*.c -Iinclude -Llib  -o output
-    private fun constructCommand(option: CompileConfig?,projectMap: MutableMap<String?, MutableList<String?>?>?): String {
-        // TODO: 根据编译选项和项目结构构建编译命令
-        return TODO("Provide the return value")
+    private fun constructCommand(option: CompileConfig?, projectDir: File): List<String> {
+        val command = mutableListOf<String>()
+
+        // 设置编译器类型，默认为 gcc
+        val compiler = option?.compilerType ?: "gcc"
+        command.add(compiler)
+
+        // 添加 src 目录下的所有 .c 文件
+        val srcDir = File(projectDir, "src")
+        if (srcDir.exists() && srcDir.isDirectory) {
+            srcDir.listFiles { file -> file.extension == "c" }?.forEach { file ->
+                command.add(file.absolutePath)
+            }
+        }
+
+        // 添加 include 目录
+        val includeDir = File(projectDir, "include")
+        if (includeDir.exists() && includeDir.isDirectory) {
+            command.add("-I${includeDir.absolutePath}")
+        }
+
+        // 添加 lib 目录
+        val libDir = File(projectDir, "lib")
+        if (libDir.exists() && libDir.isDirectory) {
+            command.add("-L${libDir.absolutePath}")
+        }
+
+        // 添加编译选项
+        option?.compilerArgs?.split(" ")?.filter { it.isNotBlank() }?.let { args ->
+            command.addAll(args)
+        }
+
+        // 设置输出文件名
+        command.add("-o")
+        command.add(File(projectDir, "output").absolutePath)
+
+        return command
     }
 }
