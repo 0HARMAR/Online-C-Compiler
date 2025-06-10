@@ -42,4 +42,9 @@ public class JwtUtils {
     public static String getUsername(Claims claims){
         return claims.get("username", String.class);
     }
+
+    public static String getUserId(Claims claims){
+        Object idObj = claims.get("id");
+        return idObj != null ? idObj.toString() : null;
+    }
 }

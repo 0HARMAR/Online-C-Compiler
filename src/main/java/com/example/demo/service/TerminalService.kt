@@ -4,10 +4,9 @@ interface TerminalService {
     /**
      * create a terminal
      */
-    fun createTerminal()
+    fun createTerminal(token: String)
 
     /**
      * interact with a terminal
      */
-    fun interactWithTerminal(terminalId: String,command: String): String
 }

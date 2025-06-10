@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -20,11 +22,11 @@ class TerminalController {
 
     /**
      * 处理创建终端的POST请求
-     * @param body 请求体内容，当前未使用
+     * @param name 终端名字
      */
     @PostMapping("/terminals")
-    fun handleCreateTerminal(@RequestBody body: String) {
-        terminalService?.createTerminal()
+    fun handleCreateTerminal(@RequestParam("name") name: String, @RequestHeader("token") token: String) {
+        terminalService?.createTerminal(token)
     }
 
     /**
@@ -33,5 +35,5 @@ class TerminalController {
      * @param body 请求体内容，当前未使用
      */
     @PostMapping("/terminals/{tid}")
-    fun handleDeleteTerminal(@PathVariable tid: String, @RequestBody body: String) {}
+    fun handleDeleteTerminal(@PathVariable tid: String, @RequestBody body: String,@RequestHeader("token") token: String) {}
 }

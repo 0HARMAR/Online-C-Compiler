@@ -1,4 +1,0 @@
-python for循环一行打印
-例子：for i in range(0,10):
-print(i,end='')
-end=''参数‘’内可添加任意字符

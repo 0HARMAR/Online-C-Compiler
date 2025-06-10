@@ -22,7 +22,7 @@ open class WebSocketConfig(
     }
 
     @Bean
-    open fun createTerminalWebSocketHandler(dockerService: DockerService): TerminalWebSocketHandler {
-        return TerminalWebSocketHandler(dockerService)
+    open fun createTerminalWebSocketHandler(): TerminalWebSocketHandler {
+        return TerminalWebSocketHandler()
     }
 }
