@@ -25,7 +25,9 @@ class TerminalServiceImpl(
             terminalDir.mkdirs()
         }
 
-        val terminal: Terminal = Terminal(JwtUtils.getUserId(JwtUtils.parseJwt(token)) as Long?,name)
+        val userIdStr = JwtUtils.getUserId(JwtUtils.parseJwt(token))
+        val userId = userIdStr.toLongOrNull()
+        val terminal: Terminal = Terminal(userId, name)
         terminalMapper.addTerminal(terminal)
     }
 }
