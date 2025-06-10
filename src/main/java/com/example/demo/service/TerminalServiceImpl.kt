@@ -1,14 +1,19 @@
 package com.example.demo.service
 
 import com.example.demo.common.JwtUtils
+import com.example.demo.dao.mapper.TerminalMapper
+import com.example.demo.model.entity.Terminal
 import io.jsonwebtoken.Jwt
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class TerminalServiceImpl(
 ):TerminalService {
+    @Autowired
+    lateinit var  terminalMapper: TerminalMapper
     // 在terminals文件夹下新建一个以tid命名的文件夹
-    override fun createTerminal(token: String) {
+    override fun createTerminal(name: String,token: String) {
         val terminalsDir = java.io.File("terminals")
         if (!terminalsDir.exists()) {
             terminalsDir.mkdirs()
@@ -19,5 +24,8 @@ class TerminalServiceImpl(
         if (!terminalDir.exists()) {
             terminalDir.mkdirs()
         }
+
+        val terminal: Terminal = Terminal(JwtUtils.getUserId(JwtUtils.parseJwt(token)) as Long?,name)
+        terminalMapper.addTerminal(terminal)
     }
 }

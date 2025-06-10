@@ -26,7 +26,7 @@ class TerminalController {
      */
     @PostMapping("/terminals")
     fun handleCreateTerminal(@RequestParam("name") name: String, @RequestHeader("token") token: String) {
-        terminalService?.createTerminal(token)
+        terminalService?.createTerminal(name,token)
     }
 
     /**
