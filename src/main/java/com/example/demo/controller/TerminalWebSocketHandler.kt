@@ -37,7 +37,7 @@ open class TerminalWebSocketHandler(
         // 如果任何指令部分以/，～开头，则实际路径为workingDir + commandPart
         val fullCommand = commandParts.joinToString(" ") { part ->
             if (part.startsWith("/") || part.startsWith("~")) {
-                "$workingDir/$part"
+                "$workingDir/${part.removePrefix("/").removePrefix("~")}"
             } else {
                 part
             }
@@ -45,7 +45,7 @@ open class TerminalWebSocketHandler(
 
         // 在工作目录执行命令
         try {
-            val process = ProcessBuilder(fullCommand)
+            val process = ProcessBuilder(fullCommand.split(" "))
                 .directory(java.io.File(workingDir))
                 .redirectErrorStream(true)
                 .start()
