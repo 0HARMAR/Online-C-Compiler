@@ -28,9 +28,6 @@ class CompileServiceImpl : CompileService {
     @Autowired
     private lateinit var compileTaskMapper: CompileTaskMapper
 
-    @Autowired
-    private lateinit var FileUploadService: FileUploadService
-
     override fun compile(option: CompileConfig, token: String, fileId: String): CompileResult? {
         val userName = JwtUtils.getUsername(JwtUtils.parseJwt(token))
         val sourceFileUrl = fileInfoMapper.findFileByFileId(fileId)

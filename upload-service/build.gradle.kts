@@ -45,6 +45,12 @@ dependencies {
 
     implementation ("com.aliyun.oss:aliyun-sdk-oss:3.17.0")
 
+    // MyBatis Spring Boot Starter（核心依赖）
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
+
+    // 数据库驱动（以 MySQL 为例）
+    runtimeOnly("mysql:mysql-connector-java:8.0.33")
+
 }
 
 tasks.withType<Test> {
