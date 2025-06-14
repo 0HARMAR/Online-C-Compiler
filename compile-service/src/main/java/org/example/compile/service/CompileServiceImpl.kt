@@ -8,14 +8,16 @@ import com.example.common.utils.FileDownloadUtil
 import com.example.common.utils.JwtUtils
 import com.example.uploadservice.service.FileUploadService
 import org.example.compile.infrastructure.CompileTaskMapper
-import org.example.compile.infrastructure.FileInfoMapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.stereotype.Service
 import java.io.*
 import java.util.*
 import java.time.LocalDateTime
+import com.example.uploadservice.infrastructure.FileInfoMapper
 
 @Service
+@ComponentScan("com.example.uploadservice.*", "org.example.compile.infrastructure")
 class CompileServiceImpl : CompileService {
     @Autowired
     private lateinit var fileUploadService: FileUploadService
