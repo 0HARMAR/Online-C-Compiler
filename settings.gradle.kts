@@ -3,4 +3,8 @@ pluginManagement {
         kotlin("jvm") version "2.1.20"
     }
 }
-rootProject.name = "OnlineCCompiler "
+rootProject.name = "OnlineCCompiler"
+
+include("common", "compile-service", "upload-service")
+
+

@@ -25,9 +25,15 @@ repositories {
 		url = uri("https://mirrors.ustc.edu.cn/nexus/content/repositories/central/")
 	}
 
+	maven { url = uri("https://repo.spring.io/release") }
 	mavenCentral()
 }
 
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.1")
+	}
+}
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -57,6 +63,11 @@ dependencies {
 
 	implementation("org.apache.httpcomponents.core5:httpcore5-h2:5.2.2")
 
+	implementation(project(":common"))
+	implementation(project(":upload-service"))
+	implementation(project(":compile-service"))
+
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.1")
 }
 
 tasks.withType<Test> {

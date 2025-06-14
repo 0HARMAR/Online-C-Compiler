@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: upload-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/online_c_compiler
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      initialization-fail-timeout: 30000

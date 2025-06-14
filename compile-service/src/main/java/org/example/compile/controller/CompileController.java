@@ -1,28 +1,14 @@
-package com.example.demo.controller;
+package org.example.compile.controller;
 
-import com.example.demo.common.JwtUtils;
-import com.example.demo.common.Result;
-import com.example.demo.configuration.FileStorageConfig;
-import com.example.demo.model.entity.CompileConfig;
-import com.example.demo.service.CompileResult;
-import com.example.demo.service.CompileServiceImpl;
-import io.jsonwebtoken.Claims;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
+
+import com.example.common.result.Result;
+import com.example.common.entity.CompileConfig;
+import com.example.common.result.CompileResult;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.example.demo.service.CompileService;
-
+import org.example.compile.service.CompileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 
 @RestController
@@ -36,7 +22,8 @@ public class CompileController {
             @RequestHeader("token") String token,
             @RequestParam String fileId) {
         // 返回编译结果OSS下载链接
-        CompileResult compileResult = compileService.compile(option,token,fileId);
+        CompileResult compileResult;
+        compileResult = compileService.compile(option,token,fileId);
         return new ResponseEntity<>(Result.success(compileResult),HttpStatus.OK);
     }
 

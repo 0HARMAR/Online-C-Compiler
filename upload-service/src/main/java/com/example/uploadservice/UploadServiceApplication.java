@@ -1,13 +1,13 @@
-package org.example.compile;
+package com.example.uploadservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CompileApplication {
+public class UploadServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CompileApplication.class, args);
+        SpringApplication.run(UploadServiceApplication.class, args);
     }
 
 }
