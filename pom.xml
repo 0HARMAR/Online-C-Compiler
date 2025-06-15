@@ -21,6 +21,8 @@
         <module>upload-service</module>
         <module>compile-service</module>
         <module>login-service</module>
+        <module>debug-service</module>
+        <module>terminal-service</module>
     </modules>
 
     <properties>
