@@ -6,10 +6,8 @@ import com.example.common.result.CompileResult
 import com.example.common.result.UploadResult
 import com.example.common.utils.FileDownloadUtil
 import com.example.common.utils.JwtUtils
-import com.example.uploadservice.service.FileUploadService
 import com.example.compileservice.infrastructure.CompileTaskMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.stereotype.Service
 import java.io.*
 import java.util.*
@@ -19,7 +17,7 @@ import com.example.uploadservice.infrastructure.FileInfoMapper
 @Service
 class CompileServiceImpl : CompileService {
     @Autowired
-    private lateinit var fileUploadService: FileUploadService
+    private lateinit var feignUploadService: FeignUploadService
 
     @Autowired
     private lateinit var fileInfoMapper: FileInfoMapper
@@ -96,7 +94,7 @@ class CompileServiceImpl : CompileService {
             val exitCode = process.waitFor()
 
             // 将编译结果上传至OSS并保存文件信息
-            val uploadResult: UploadResult = fileUploadService.saveFile(outputFile,token)
+            val uploadResult: UploadResult = feignUploadService.uploadFile(outputFile,token)
             return CompileResult(
                  exitCode,
                 uploadResult.uploadUrl,

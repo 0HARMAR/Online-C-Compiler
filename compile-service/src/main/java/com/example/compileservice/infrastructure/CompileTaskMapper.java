@@ -1,4 +1,4 @@
-package org.example.compile.infrastructure;
+package com.example.compileservice.infrastructure;
 
 import com.example.common.entity.CompileTask;
 import org.apache.ibatis.annotations.Insert;
