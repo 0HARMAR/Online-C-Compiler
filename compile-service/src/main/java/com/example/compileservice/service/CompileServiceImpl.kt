@@ -1,4 +1,4 @@
-package org.example.compile.service
+package com.example.compileservice.service
 
 import com.example.common.entity.CompileConfig
 import com.example.common.entity.CompileTask
@@ -7,7 +7,7 @@ import com.example.common.result.UploadResult
 import com.example.common.utils.FileDownloadUtil
 import com.example.common.utils.JwtUtils
 import com.example.uploadservice.service.FileUploadService
-import org.example.compile.infrastructure.CompileTaskMapper
+import com.example.compileservice.infrastructure.CompileTaskMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.stereotype.Service
@@ -17,7 +17,6 @@ import java.time.LocalDateTime
 import com.example.uploadservice.infrastructure.FileInfoMapper
 
 @Service
-@ComponentScan("com.example.uploadservice.*", "org.example.compile.infrastructure")
 class CompileServiceImpl : CompileService {
     @Autowired
     private lateinit var fileUploadService: FileUploadService

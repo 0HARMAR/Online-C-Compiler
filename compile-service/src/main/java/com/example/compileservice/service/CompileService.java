@@ -1,4 +1,4 @@
-package org.example.compile.service;
+package com.example.compileservice.service;
 
 import com.example.common.entity.CompileConfig;
 import com.example.common.result.CompileResult;

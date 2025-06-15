@@ -1,5 +1,4 @@
-package org.example.compile.controller;
-
+package com.example.compileservice.controller;
 
 import com.example.common.result.Result;
 import com.example.common.entity.CompileConfig;
@@ -8,9 +7,8 @@ import io.jsonwebtoken.Claims;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.example.compile.service.CompileService;
+import com.example.compileservice.service.CompileService;
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 @RestController
 public class CompileController {
@@ -34,5 +32,4 @@ public class CompileController {
             @RequestAttribute("jwtClaims") Claims claims) {
         return new ResponseEntity<>(Result.success("编译成功"),HttpStatus.OK);
     }
-
 }

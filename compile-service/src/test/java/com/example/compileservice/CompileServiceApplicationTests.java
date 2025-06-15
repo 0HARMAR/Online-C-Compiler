@@ -1,13 +1,12 @@
-package org.example.compile;
+package com.example.compileservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CompileApplicationTests {
+class CompileServiceApplicationTests {
 
     @Test
     void contextLoads() {
     }
-
 }
