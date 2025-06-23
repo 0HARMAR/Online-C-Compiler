@@ -1,4 +1,4 @@
-package com.example.gateway.interceptor;
+package com.example.gateway.filters;
 
     import com.example.gateway.utils.JwtUtils;
     import io.jsonwebtoken.Claims;
