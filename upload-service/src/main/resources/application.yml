@@ -12,3 +12,7 @@ spring:
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
+      config:
+        file-extension: yaml          # 配置文件格式（yaml/properties）
+        namespace: public                # 命名空间（可选）
+        group: DEFAULT_GROUP          # 配置分组（可选）

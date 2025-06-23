@@ -23,6 +23,8 @@
         <module>login-service</module>
         <module>debug-service</module>
         <module>terminal-service</module>
+        <module>config-service</module>
+        <module>gate-way</module>
     </modules>
 
     <properties>

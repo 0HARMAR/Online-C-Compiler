@@ -15,7 +15,4 @@ data class User(
 
     @field:Column(nullable = false, length = 255)
     var password: String? = null,
-
-    @field:Column(length = 512)  // 根据业务需求调整长度
-    var token: String? = null
 )

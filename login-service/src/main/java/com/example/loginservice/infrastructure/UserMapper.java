@@ -6,6 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserMapper {
-    @Insert("insert into users(name,password,token) values (#{name},#{password},#{token})")
-    public void addUser(User user);
+    @Insert("insert into users(name,password) values (#{name},#{password})")
+    void addUser(User user);
 }

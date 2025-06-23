@@ -1,4 +1,5 @@
-package com.example.common.utils;
+package com.example.gateway.utils;
+
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,9 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class JwtUtils {
-    private static final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    public static SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public static Integer id;
     public static String username;

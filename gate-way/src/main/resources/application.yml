@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: gate-way
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: login-service
+              uri: lb://login-service
+              predicates:
+                - Path=/login,/login/**
+            - id: upload-service
+              uri: lb://upload-service
+              predicates:
+                - Path=/upload,/upload/**
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        enabled: true
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.loadbalancer: DEBUG
