@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
-@FeignClient(name="compile-service",url="https://localhost:9090")
+@FeignClient(name="compile-service")
 public interface FeignUploadClient {
     @PostMapping("/upload")
     ResponseEntity<Result<UploadResult>> callFileUpload(

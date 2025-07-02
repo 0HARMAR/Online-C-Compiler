@@ -10,8 +10,6 @@ spring:
               uri: lb://login-service
               predicates:
                 - Path=/login,/login/**
-              filters:
-                - name: AddJwtTokenFilter
             - id: upload-service
               uri: lb://upload-service
               predicates:

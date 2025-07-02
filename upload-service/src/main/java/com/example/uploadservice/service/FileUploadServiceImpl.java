@@ -2,11 +2,11 @@ package com.example.uploadservice.service;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.example.common.entity.FileInfo;
+import com.example.common.entity.User;
 import com.example.common.exception.BusinessException;
 import com.example.common.exception.ErrorCode;
 import com.example.common.exception.HashCalculationException;
 import com.example.common.result.UploadResult;
-import com.example.common.utils.JwtUtils;
 import com.example.demo.common.AliyunOSSOperator;
 import com.example.uploadservice.infrastructure.FileInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     private FileInfoMapper fileInfoMapper;
 
     @Override
-    public UploadResult saveFile(MultipartFile file, String token) {
+    public UploadResult saveFile(MultipartFile file, User user) {
         // 检查文件是否为空
         if (file.isEmpty()) {
             throw new BusinessException(ErrorCode.FILE_NOT_FOUND);
@@ -68,7 +68,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         // 获取updateAt
         fileInfo.setUpdatedAt(LocalDateTime.now());
         // 获取所有者
-        String userName = JwtUtils.getUsername(JwtUtils.parseJwt(token));
+        String userName = user.getName();
         fileInfo.setOwner(userName);
 
         fileInfo.setFileId(fileId);
@@ -95,7 +95,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         return new UploadResult(uploadUrl, fileId);
     }
 
-    public UploadResult saveFile(File file, String token) {
+    public UploadResult saveFile(File file, User user) {
         if (file == null || !file.exists() || file.length() == 0) {
             throw new BusinessException(ErrorCode.FILE_NOT_FOUND);
         }
@@ -124,7 +124,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
         fileInfo.setCreatedAt(LocalDateTime.now());
         fileInfo.setUpdatedAt(LocalDateTime.now());
-        String userName = JwtUtils.getUsername(JwtUtils.parseJwt(token));
+        String userName = user.getName();
         fileInfo.setOwner(userName);
 
         fileInfo.setFileId(fileId);
